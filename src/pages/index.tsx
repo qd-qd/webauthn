@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import {
-  create,
-  get,
-  parseCreationOptionsFromJSON,
-  parseRequestOptionsFromJSON,
-} from "@github/webauthn-json/browser-ponyfill";
-import {
   getKeyCredentialCreationOptions,
   getRequestOptions,
 } from "../utils/webauthn";
@@ -47,7 +41,7 @@ const HomeView = ({ status, userId }: { status: STATUS; userId: string }) => {
 
 export default function Home() {
   const [username, setUsername] = useState<string>("");
-  const [currentUserId, saveUserId] = useState<string | null>();
+  const [base64UserId, saveBase64UserId] = useState<string | null>();
   const [isSupported] = useWebAuthnSupportCheck();
   const [status, setStatus] = useState<STATUS>(STATUS.NOT_REGISTERED);
 
@@ -57,7 +51,7 @@ export default function Home() {
     if (!userId) return;
 
     // if there is a userId saved it in the state
-    saveUserId(userId);
+    saveBase64UserId(userId);
     setStatus(STATUS.NOT_LOGGED);
   }, []);
 
@@ -80,20 +74,19 @@ export default function Home() {
       const currentDomain = window.location.hostname;
 
       // create the options for webauthn
-      const options = parseCreationOptionsFromJSON(
-        getKeyCredentialCreationOptions(
-          challenge,
-          currentDomain,
-          username,
-          userId
-        )
+      const options = getKeyCredentialCreationOptions(
+        Buffer.from(challenge, "base64"),
+        currentDomain,
+        username,
+        Buffer.from(userId, "utf8")
       );
 
       // create the credential
-      const credential = await create(options);
+      const credential = await navigator.credentials.create(options);
+      console.log(credential.id);
 
       // save the ID in the state and in the local storage
-      saveUserId(credential.id);
+      saveBase64UserId(credential.id);
       localStorage.setItem("userId", credential.id);
 
       // set the status
@@ -103,7 +96,7 @@ export default function Home() {
       console.log(
         "Here's the certificate created by the authenticator you chose during the registration process",
         "\n",
-        credential.toJSON()
+        credential
       );
 
       /**
@@ -124,12 +117,14 @@ export default function Home() {
       const { challenge } = await res.json();
 
       // create the options for webauthn
-      const options = parseRequestOptionsFromJSON(
-        getRequestOptions(challenge, currentUserId)
+      const options = getRequestOptions(
+        Buffer.from(challenge, "base64"),
+        // id returned by the authenticator during the registration step is encoded using base64
+        Buffer.from(base64UserId, "base64")
       );
 
       // create the credential
-      const credential = await get(options);
+      const credential = await navigator.credentials.get(options);
 
       // flag the user as logged
       setStatus(STATUS.LOGGED);
@@ -138,7 +133,7 @@ export default function Home() {
       console.log(
         "Here's the certificate created by the authenticator you chose during the authentification process",
         "\n",
-        credential.toJSON()
+        credential
       );
 
       /**
@@ -156,7 +151,7 @@ export default function Home() {
 
   // this function is in charge of removing the userId from the localstorage and reset the state of the app
   const reset = () => {
-    saveUserId(null);
+    saveBase64UserId(null);
     setStatus(STATUS.NOT_REGISTERED);
     localStorage.removeItem("userId");
   };
@@ -186,28 +181,28 @@ export default function Home() {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             placeholder="0xWebAuthn"
-            disabled={!!currentUserId}
+            disabled={!!base64UserId}
           />
         </div>
         <div>
-          <button onClick={register} disabled={!isSupported || !!currentUserId}>
+          <button onClick={register} disabled={!isSupported || !!base64UserId}>
             register
           </button>
-          <button onClick={reset} disabled={!isSupported || !currentUserId}>
+          <button onClick={reset} disabled={!isSupported || !base64UserId}>
             delete your account
           </button>
         </div>
         <div>
           <button
             onClick={login}
-            disabled={!currentUserId || status === STATUS.LOGGED}
+            disabled={!base64UserId || status === STATUS.LOGGED}
           >
             login
           </button>
           <button onClick={logout} disabled={status !== STATUS.LOGGED}>
             logout
           </button>
-          <HomeView status={status} userId={currentUserId} />
+          <HomeView status={status} userId={base64UserId} />
         </div>
       </section>
     </main>

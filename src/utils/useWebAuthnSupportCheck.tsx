@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { supported } from "@github/webauthn-json/browser-ponyfill";
 
 type Details = {
   publicKeyCredentialSupport: boolean;
@@ -9,19 +8,25 @@ type Details = {
   navigatorCredentialsGetSupport: boolean;
 };
 
+type Support = {
+  isSupported: boolean;
+  details: Partial<Details>;
+};
+
 /*  check if webauthn is supported in the context the app is loaded
     if it's not the case, return the details */
-const useWebAuthnSupportCheck = (): [boolean, Partial<Details>] => {
-  const [isSupported, setIsSupported] = useState<boolean>(false);
-  const [details, setDetails] = useState<Partial<Details>>({});
+const useWebAuthnSupportCheck = (): [
+  Support["isSupported"],
+  Support["details"]
+] => {
+  const [support, setSupport] = useState<Support>({
+    isSupported: false,
+    details: {},
+  });
 
   useEffect(() => {
-    // check client-side if webAuthn is supported
-    const support = supported();
-    if (support) return setIsSupported(support);
-
-    // if webauthn isn't supported, details the support
-    const supportDetails: Details = {
+    // check the support of all required API for WebAuthn
+    const details: Details = {
       publicKeyCredentialSupport: !!window?.PublicKeyCredential,
       navigatorSupport: !!window?.navigator,
       navigatorCredentialsSupport: !!window?.navigator?.credentials,
@@ -30,11 +35,14 @@ const useWebAuthnSupportCheck = (): [boolean, Partial<Details>] => {
       navigatorCredentialsGetSupport: !!window?.navigator?.credentials.get,
     };
 
+    // check if all the APIs are supported
+    const isSupported = Object.values(details).every((value) => value === true);
+
     // store the details
-    setDetails(supportDetails);
+    setSupport({ isSupported, details });
   }, []);
 
-  return [isSupported, details];
+  return [support.isSupported, support.details];
 };
 
 export default useWebAuthnSupportCheck;
