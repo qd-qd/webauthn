@@ -1,34 +1,119 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# WebAuthn experimentation
 
-## Getting Started
+## Introduction
 
-First, run the development server:
+This repository is an experimentation that shows how the Web Authentication API works (called WebAuthn), and how this specification can be used to create passwordless authentification experiences. The code in this repository is not production-ready. Please, take into consideration concerns and comments in the [note](#notes) section before using it in production.
 
-```bash
-npm run dev
-# or
-yarn dev
+[![Watch the video](https://img.youtube.com/vi/zJPNuORkvvk/maxresdefault.jpg)](https://www.youtube.com/watch?v=zJPNuORkvvk)
+
+<p align="center">
+    Watch this introduction to understand what is WebAuthn
+</p>
+
+## Installation
+
+All you need to do is install the dependencies needed
+
+```shell
+pnpm i
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Run the application
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+Run the frontend locally by running
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+```
+pnpm dev
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Test
 
-## Learn More
+You can run the tests by running this command
 
-To learn more about Next.js, take a look at the following resources:
+```shell
+# WIP
+pnpm run test
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## What is WebAuthn
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+The Web Authentication API (also known as WebAuthn) is a specification written by the W3C and FIDO, with the participation of Google, Mozilla, Microsoft, Yubico, and others. It is a way better alternative for securing sensitive information online.
 
-## Deploy on Vercel
+It allows servers to integrate with the strong authenticators now built into devices, like Windows Hello or Apple’s Touch ID. Instead of a password, a private-public key pair (known as a credential) is created for a website. The private key is stored securely on the user’s device; a public key and randomly generated credential ID are sent to the server for storage. The server can then use that public key to prove the user’s identity.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The public key is not secret, because it is effectively useless without the corresponding private key. The fact that the server receives no secret has far-reaching implications for the security of users and organizations. Databases are no longer as attractive to hackers because the public keys aren’t useful to them.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+As the Web Authentication API (also referred to as WebAuthn) uses [asymmetric (public-key)](https://en.wikipedia.org/wiki/Public-key_cryptography) instead of passwords or SMS texts for registering, authenticating, and [second-factor authentication](https://en.wikipedia.org/wiki/Multi-factor_authentication) with websites, that unlock some benefits:
+
+- Protection against phishing: An attacker who creates a fake login website can't login as the user because the signature changes with the [origin](https://developer.mozilla.org/en-US/docs/Glossary/Origin) of the website.
+- Reduced impact of data breaches: Developers don't need to hash the public key, and if an attacker gets access to the public key used to verify the authentication, it can't authenticate because it needs the private key.
+- Invulnerable to password attacks: Some users might reuse passwords, and an attacker may obtain the user's password for another website (e.g. via a data breach). Also, text passwords are much easier to brute-force than a digital signature.
+
+WebAuthn is part of the FIDO2 framework, which is a set of technologies that enable passwordless authentication between servers, browsers, and authenticators. Nowadays WebAuthn is well supported.
+
+## Benefits
+
+WebAuthn is a strong authentication method. The Authentication is ideally backed by a Hardware Security Module, which can safely store private keys and perform the cryptographic operations needed for WebAuthn.
+
+Also, the authentication process is scoped, which completely eliminates the risk of phishing. A keypair is only useful for a specific origin, like browser cookies. A keypayr registered at 'twitter.com' cannot be used at 'bad-twitter.com'.
+
+Least but not last, the authentication is attested. The authenticators can provide a certificate that helps servers verify that the public key did in fact come from an authenticator they trust, and not a fraudulent source.
+
+## How WebAuthn works
+
+### Registration flow
+
+![FIDO registration flow](./docs/fido-registration-flow.png)
+
+1. User is prompted to choose an available FIDO authenticator that matches the online service’s acceptance policy.
+2. User unlocks the FIDO authenticator using a fingerprint reader, a button on a second–factor device, securely–entered PIN or other method.
+3. User’s device creates a new public/private key pair unique for the local device, online service and user’s account.
+4. Public key is sent to the online service and associated with the user’s account. The private key and any information about the local authentication method (such as biometric measurements or templates) never leave the local device.
+
+### Authentification flow
+
+![FIDO authentification flow](./docs/fido-login-flow.png)
+
+1. Online service challenges the user to login with a previously registered device that matches the service’s acceptance policy.
+2. User unlocks the FIDO authenticator using the same method as at Registration time.
+3. Device uses the user’s account identifier provided by the service to select the correct key and sign the service’s challenge.
+4. Client device sends the signed challenge back to the service, which verifies it with the stored public key and logs in the user.
+
+## Support of WebAuthn
+
+[![WebAuthn support - 09/22](./docs/webauthn-support-0922.png)](https://caniuse.com/webauthn)
+
+<p align="center">
+    Snapshot taken on september 2022
+</p>
+
+## Notes
+
+This application is an experimentation, the code IS NOT PRODUCTION READY. If you want to use it as a base, please read the ressources linked below and pay attention to the comments that includes `@TODO`. They need to be solved before envisaging using WebAuthn for real.
+
+## Ressources
+
+## Official resources
+
+[Web Authentication: An API for accessing Public Key Credentials. Level 2 W3C specification](https://www.w3.org/TR/webauthn-2/)
+
+[Web Authentication: An API for accessing Public Key Credentials. Level 3 W3C specification - DRAFT](https://w3c.github.io/webauthn/#sctn-intro)
+
+[Web Authentication API - MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API)
+[FIDO alliance official website](https://fidoalliance.org/fido2/)
+
+## Interesting resources
+
+[What is WebAuthn? - an illustrated explanation](https://webauthn.guide/#intro)
+
+[What is WebAuthn? - by](https://www.yubico.com/authentication-standards/webauthn/) @Yubico
+
+[Introduction to WebAuthn API and Passkey](https://medium.com/webauthnworks/introduction-to-webauthn-api-5fd1fb46c285)
+
+[How FIDO works](https://fidoalliance.org/how-fido-works/)
+
+[An web implementation of WebAuthn that uses nextjs](https://github.com/cotter-code/guide-next-webauthn)
+
+[Discussion on the serialization/deserialization of webAuthn authenticator response](https://github.com/w3c/webauthn/issues/1683)
+
+[User Presence vs User Verification](https://developers.yubico.com/WebAuthn/WebAuthn_Developer_Guide/User_Presence_vs_User_Verification.html)
