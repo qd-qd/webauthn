@@ -1,4 +1,4 @@
-import generateChallenge from "../../../utils/generateChallenge";
+import { generateChallenge } from "../../../utils/crypto";
 
 // @dev: Return a random 64-characters string
 const challenge = async (_, res) => {
