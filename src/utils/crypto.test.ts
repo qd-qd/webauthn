@@ -3,7 +3,7 @@ import * as crypto from './crypto';
 describe('crypto', () => {
     describe('generateChallenge', () => {
         it('returned challenge is valid base64 string', () => {
-            const challenge = crypto.generateChallenge();
+            const challenge = crypto.generateChallenge().toString('base64');
 
             // regex to validate a string is encoded in base64
             const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
@@ -11,7 +11,7 @@ describe('crypto', () => {
         });
 
         it('returned challenge has the correct size', () => {
-            const challenge = crypto.generateChallenge();
+            const challenge = crypto.generateChallenge().toString('base64');
             /**
             * Each character is used to represent 6 bits (log2(64) = 6).
             * Therefore 4 chars are used to represent 4 * 6 = 24 bits = 3 bytes.

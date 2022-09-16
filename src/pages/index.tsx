@@ -65,8 +65,8 @@ export default function Home() {
           body: JSON.stringify({ username }),
         }),
       ]);
-      const [{ challenge }, { userId }] = await Promise.all([
-        challengeRes.json(),
+      const [challenge, { userId }] = await Promise.all([
+        challengeRes.arrayBuffer(),
         userIdRes.json(),
       ]);
 
@@ -75,7 +75,7 @@ export default function Home() {
 
       // create the options for webauthn
       const options = getKeyCredentialCreationOptions(
-        Buffer.from(challenge, "base64"),
+        challenge,
         currentDomain,
         username,
         Buffer.from(userId, "utf8")
@@ -114,11 +114,11 @@ export default function Home() {
   const login = async () => {
     try {
       const res = await fetch("/api/webauthn/challenge");
-      const { challenge } = await res.json();
+      const challenge = await res.arrayBuffer();
 
       // create the options for webauthn
       const options = getRequestOptions(
-        Buffer.from(challenge, "base64"),
+        challenge,
         // id returned by the authenticator during the registration step is encoded using base64
         Buffer.from(base64UserId, "base64")
       );

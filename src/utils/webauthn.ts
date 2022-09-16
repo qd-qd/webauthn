@@ -1,5 +1,5 @@
 export const getKeyCredentialCreationOptions = (
-    challenge: Buffer,
+    challenge: ArrayBuffer,
     currentDomain: string,
     username: string,
     userId: Buffer
@@ -31,7 +31,7 @@ export const getKeyCredentialCreationOptions = (
 });
 
 // the id represents the hash returned by the authenticator during the registration process
-export const getRequestOptions = (challenge: Buffer, id: Buffer): CredentialRequestOptions => ({
+export const getRequestOptions = (challenge: ArrayBuffer, id: Buffer): CredentialRequestOptions => ({
     publicKey: {
         allowCredentials: [{ id, type: "public-key" }],
         timeout: 60000,
