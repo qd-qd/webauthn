@@ -10,7 +10,7 @@ import {
   getKeyCredentialCreationOptions,
   getRequestOptions,
 } from "../utils/webauthn";
-import isWebAuthnSupported from "../utils/isWebAuthnSupported";
+import useWebAuthnSupportCheck from "../utils/useWebAuthnSupportCheck";
 
 // import the component client-side only
 const WebAuthnSupportTable = dynamic(
@@ -48,7 +48,7 @@ const HomeView = ({ status, userId }: { status: STATUS; userId: string }) => {
 export default function Home() {
   const [username, setUsername] = useState<string>("");
   const [currentUserId, saveUserId] = useState<string | null>();
-  const [isSupported] = isWebAuthnSupported();
+  const [isSupported] = useWebAuthnSupportCheck();
   const [status, setStatus] = useState<STATUS>(STATUS.NOT_REGISTERED);
 
   useEffect(() => {

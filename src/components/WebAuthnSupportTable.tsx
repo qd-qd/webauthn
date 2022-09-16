@@ -1,11 +1,11 @@
-import isWebAuthnSupported from "../utils/isWebAuthnSupported";
+import useWebAuthnSupportCheck from "../utils/useWebAuthnSupportCheck";
 
 const SupportEmoji = ({ isSupported }: { isSupported: boolean }) => (
   <span>{isSupported ? "✅" : "❌"}</span>
 );
 
 const WebAuthnSupportTable = () => {
-  const [isSupported, details] = isWebAuthnSupported();
+  const [isSupported, details] = useWebAuthnSupportCheck();
 
   if (isSupported)
     return <p>WebAuthn is fully supported in this context! 🥳✅</p>;

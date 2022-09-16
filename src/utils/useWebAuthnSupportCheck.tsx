@@ -11,7 +11,7 @@ type Details = {
 
 /*  check if webauthn is supported in the context the app is loaded
     if it's not the case, return the details */
-const isWebAuthnSupported = (): [boolean, Partial<Details>] => {
+const useWebAuthnSupportCheck = (): [boolean, Partial<Details>] => {
   const [isSupported, setIsSupported] = useState<boolean>(false);
   const [details, setDetails] = useState<Partial<Details>>({});
 
@@ -37,4 +37,4 @@ const isWebAuthnSupported = (): [boolean, Partial<Details>] => {
   return [isSupported, details];
 };
 
-export default isWebAuthnSupported;
+export default useWebAuthnSupportCheck;
