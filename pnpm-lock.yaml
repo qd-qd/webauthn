@@ -1,7 +1,6 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@github/webauthn-json': ^2.0.0
   '@testing-library/jest-dom': ^5.16.5
   '@testing-library/react': ^13.4.0
   '@types/node': 18.7.17
@@ -16,7 +15,6 @@ specifiers:
   typescript: 4.8.3
 
 dependencies:
-  '@github/webauthn-json': 2.0.0
   next: 12.3.0_biqbaboplfbrettd7655fr4n2y
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
@@ -408,11 +406,6 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
-
-  /@github/webauthn-json/2.0.0:
-    resolution: {integrity: sha512-ysyCydg3KdGjm/kfxStT/ajaTbP9y+h8tAZbbrHicyyfVhTykSTruONHCG2lKCeXaFsRVueD9xo9fygzfKJN4A==}
-    hasBin: true
-    dev: false
 
   /@humanwhocodes/config-array/0.10.4:
     resolution: {integrity: sha512-mXAIHxZT3Vcpg83opl1wGlVZ9xydbfZO3r5YfRSH6Gpp2J/PfdBP0wbDa2sO6/qRbcalpoevVyW6A/fI6LfeMw==}

@@ -1,14 +1,9 @@
-import {
-    CredentialRequestOptionsJSON,
-    CredentialCreationOptionsJSON,
-} from "@github/webauthn-json/browser-ponyfill";
-
 export const getKeyCredentialCreationOptions = (
-    challenge: string,
+    challenge: Buffer,
     currentDomain: string,
     username: string,
-    userId: string
-): CredentialCreationOptionsJSON => ({
+    userId: Buffer
+): CredentialCreationOptions => ({
     publicKey: {
         // the challenge is passed by the server and need to be returned to the server
         // at the end of the registration process for verification
@@ -36,7 +31,7 @@ export const getKeyCredentialCreationOptions = (
 });
 
 // the id represents the hash returned by the authenticator during the registration process
-export const getRequestOptions = (challenge: string, id: string): CredentialRequestOptionsJSON => ({
+export const getRequestOptions = (challenge: Buffer, id: Buffer): CredentialRequestOptions => ({
     publicKey: {
         allowCredentials: [{ id, type: "public-key" }],
         timeout: 60000,
