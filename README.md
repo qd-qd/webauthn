@@ -91,6 +91,8 @@ Least but not last, the authentication is attested. The authenticators can provi
 
 This application is an experimentation, the code IS NOT PRODUCTION READY. If you want to use it as a base, please read the ressources linked below and pay attention to the comments that includes `@TODO`. They need to be solved before envisaging using WebAuthn for real.
 
+I made the choice, on the main branch, to use as few dependencies as possible. This means that I only use the official WebAuthn API, with its good and bad sides. One of the problems of the current state of the API is that some of the data returned by the autenticator is of type `ArrayBuffer`. Even if this type is interesting for the WebAuthn use case, this makes it difficult for the manipulation and the communication with the backend. You can read more about this in the ongoing conversation about modifying the spec [here](https://github.com/w3c/webauthn/issues/1683). If you want to use this repository as a base, but want a version where the data returned by the autenticator is more "developer-friendly", I have pushed a branch that uses [webauthnjson](https://github.com/github/webauthn-json) [here](https://github.com/qd-qd/webauthn/tree/version-with-webauthnjson).
+
 ## Ressources
 
 ## Official resources
