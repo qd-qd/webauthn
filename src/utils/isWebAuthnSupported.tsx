@@ -9,9 +9,8 @@ type Details = {
   navigatorCredentialsGetSupport: boolean;
 };
 
-/* @DEV: check if webauthn is supported in the context the app is loaded
-         if it's not the case, return the details
-*/
+/*  check if webauthn is supported in the context the app is loaded
+    if it's not the case, return the details */
 const isWebAuthnSupported = (): [boolean, Partial<Details>] => {
   const [isSupported, setIsSupported] = useState<boolean>(false);
   const [details, setDetails] = useState<Partial<Details>>({});
