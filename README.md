@@ -51,13 +51,7 @@ As the Web Authentication API (also referred to as WebAuthn) uses [asymmetric (p
 
 WebAuthn is part of the FIDO2 framework, which is a set of technologies that enable passwordless authentication between servers, browsers, and authenticators. Nowadays WebAuthn is well supported.
 
-## Benefits
-
-WebAuthn is a strong authentication method. The Authentication is ideally backed by a Hardware Security Module, which can safely store private keys and perform the cryptographic operations needed for WebAuthn.
-
-Also, the authentication process is scoped, which completely eliminates the risk of phishing. A keypair is only useful for a specific origin, like browser cookies. A keypayr registered at 'twitter.com' cannot be used at 'bad-twitter.com'.
-
-Least but not last, the authentication is attested. The authenticators can provide a certificate that helps servers verify that the public key did in fact come from an authenticator they trust, and not a fraudulent source.
+WebAuthn is a passwordless way to authenticate, not an usernameless way to authenticate. One possible solution to remove the username too is to combine WebAuthn the [`residential keys`](https://duo.com/labs/tech-notes/resident-keys-and-the-future-of-webauthn-fido2).
 
 ## How WebAuthn works
 
