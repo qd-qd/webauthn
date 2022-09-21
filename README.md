@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This repository is an experimentation that shows how the Web Authentication API works (called WebAuthn), and how this specification can be used to create passwordless authentification experiences. The code in this repository is not production-ready. Please, take into consideration concerns and comments in the [note](#notes) section before using it in production.
+This repository is an experimentation that shows how the Web Authentication API works (called WebAuthn), and how this specification can be used to create a passwordless **and usernameless** authentification experiences (thanks to the resident keys). The code in this repository is not production-ready. Please, take into consideration concerns and comments in the [note](#notes) section before using it in production.
 
 [![Watch the video](https://img.youtube.com/vi/zJPNuORkvvk/maxresdefault.jpg)](https://www.youtube.com/watch?v=zJPNuORkvvk)
 
@@ -50,8 +50,6 @@ As the Web Authentication API (also referred to as WebAuthn) uses [asymmetric (p
 - Invulnerable to password attacks: Some users might reuse passwords, and an attacker may obtain the user's password for another website (e.g. via a data breach). Also, text passwords are much easier to brute-force than a digital signature.
 
 WebAuthn is part of the FIDO2 framework, which is a set of technologies that enable passwordless authentication between servers, browsers, and authenticators. Nowadays WebAuthn is well supported.
-
-WebAuthn is a passwordless way to authenticate, not an usernameless way to authenticate. One possible solution to remove the username too is to combine WebAuthn the [`residential keys`](https://duo.com/labs/tech-notes/resident-keys-and-the-future-of-webauthn-fido2).
 
 ## How WebAuthn works
 
