@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import dynamic from "next/dynamic";
 import {
   getKeyCredentialCreationOptions,
   getRequestOptions,
 } from "../utils/webauthn";
-import useWebAuthnSupportCheck from "../utils/useWebAuthnSupportCheck";
 
 // import the component client-side only
 const WebAuthnSupportTable = dynamic(
@@ -18,42 +17,9 @@ enum STATUS {
   NOT_LOGGED,
 }
 
-const HomeView = ({ status, userId }: { status: STATUS; userId: string }) => {
-  if (status === STATUS.NOT_REGISTERED)
-    return <p>Choose an username and register</p>;
-
-  if (status === STATUS.NOT_LOGGED)
-    return (
-      <div>
-        <p>You're registered! Here's the id assigned to you:</p>
-        <p style={{ fontSize: "0.7rem" }}>{userId}</p>
-        <p>You can now authentificate yourself if you want</p>
-      </div>
-    );
-
-  return (
-    <div>
-      <p>You're logged! Here's the id assigned to you:</p>
-      <p style={{ fontSize: "0.7rem" }}>{userId}</p>
-    </div>
-  );
-};
-
 export default function Home() {
   const [username, setUsername] = useState<string>("");
-  const [base64UserId, saveBase64UserId] = useState<string | null>();
-  const [isSupported] = useWebAuthnSupportCheck();
   const [status, setStatus] = useState<STATUS>(STATUS.NOT_REGISTERED);
-
-  useEffect(() => {
-    // fetch the userId from the local storage
-    const userId = localStorage.getItem("userId");
-    if (!userId) return;
-
-    // if there is a userId saved it in the state
-    saveBase64UserId(userId);
-    setStatus(STATUS.NOT_LOGGED);
-  }, []);
 
   const register = async () => {
     try {
@@ -83,14 +49,12 @@ export default function Home() {
 
       // create the credential
       const credential = await navigator.credentials.create(options);
-      console.log(credential.id);
-
-      // save the ID in the state and in the local storage
-      saveBase64UserId(credential.id);
-      localStorage.setItem("userId", credential.id);
 
       // set the status
       setStatus(STATUS.NOT_LOGGED);
+
+      // reset the input
+      setUsername("");
 
       // log the certificate created by the authenticator during the registration process
       console.log(
@@ -117,11 +81,7 @@ export default function Home() {
       const challenge = await res.arrayBuffer();
 
       // create the options for webauthn
-      const options = getRequestOptions(
-        challenge,
-        // id returned by the authenticator during the registration step is encoded using base64
-        Buffer.from(base64UserId, "base64")
-      );
+      const options = getRequestOptions(challenge);
 
       // create the credential
       const credential = await navigator.credentials.get(options);
@@ -147,15 +107,6 @@ export default function Home() {
     }
   };
 
-  const logout = () => setStatus(STATUS.NOT_LOGGED);
-
-  // this function is in charge of removing the userId from the localstorage and reset the state of the app
-  const reset = () => {
-    saveBase64UserId(null);
-    setStatus(STATUS.NOT_REGISTERED);
-    localStorage.removeItem("userId");
-  };
-
   return (
     <main style={{ display: "flex", flexDirection: "column", rowGap: "1rem" }}>
       <WebAuthnSupportTable />
@@ -174,37 +125,26 @@ export default function Home() {
             alignItems: "flex-start",
           }}
         >
-          <label htmlFor="username">Username</label>
+          <label htmlFor="username">Display name (facultative)</label>
           <input
             name="username"
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             placeholder="0xWebAuthn"
-            disabled={!!base64UserId}
           />
         </div>
-        <div>
-          <button onClick={register} disabled={!isSupported || !!base64UserId}>
-            register
-          </button>
-          <button onClick={reset} disabled={!isSupported || !base64UserId}>
-            delete your account
+        <div style={{ display: "flex", columnGap: "0.4rem" }}>
+          <button onClick={register}>register</button>
+          <button onClick={login}>
+            {status !== STATUS.LOGGED ? "login" : "changer de compte"}
           </button>
         </div>
-        <div>
-          <button
-            onClick={login}
-            disabled={!base64UserId || status === STATUS.LOGGED}
-          >
-            login
-          </button>
-          <button onClick={logout} disabled={status !== STATUS.LOGGED}>
-            logout
-          </button>
-          <HomeView status={status} userId={base64UserId} />
-        </div>
+        <p>{status == STATUS.LOGGED ? "Connecté ✅" : null}</p>
       </section>
+      <p style={{ fontStyle: "italic" }}>
+        This implementation use the resident key to offer a usernameless flow
+      </p>
     </main>
   );
 }
