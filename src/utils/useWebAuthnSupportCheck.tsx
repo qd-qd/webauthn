@@ -31,8 +31,8 @@ const useWebAuthnSupportCheck = (): [
       navigatorSupport: !!window?.navigator,
       navigatorCredentialsSupport: !!window?.navigator?.credentials,
       navigatorCredentialsCreateSupport:
-        !!window?.navigator?.credentials.create,
-      navigatorCredentialsGetSupport: !!window?.navigator?.credentials.get,
+        !!window?.navigator?.credentials?.create,
+      navigatorCredentialsGetSupport: !!window?.navigator?.credentials?.get,
     };
 
     // check if all the APIs are supported
