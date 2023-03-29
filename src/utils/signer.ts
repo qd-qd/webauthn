@@ -13,7 +13,7 @@ import { parseRequestOptionsFromJSON, get } from "@github/webauthn-json/browser-
 export class WebAuthnSigner implements SignerInterface {
     /**
    * Get the Starknet public key
-   * 
+   *
    * @returns {string} the public key
    */
     public async getPubKey(): Promise<string> {
@@ -33,7 +33,7 @@ export class WebAuthnSigner implements SignerInterface {
 
     /**
    * Sign a Starknet invoke transaction
-   * 
+   *
    * @param {Invocation[]}  transactions - arrays of transactions to be signed
    * @param {InvocationsSignerDetails} transactionsDetail - addtional information about transactions
    * @returns {signature} the tx signature
@@ -48,7 +48,7 @@ export class WebAuthnSigner implements SignerInterface {
 
     /**
    * Sign a typed data with the private key set by derivation path
-   * 
+   *
    * @param {typedData.TypedData}  data - data to be signed
    * @param {string} accountAddress - account address
    * @returns {signature} the msg signature
@@ -59,7 +59,7 @@ export class WebAuthnSigner implements SignerInterface {
 
     /**
    * Sign a bytestring (e.g perdersen hash) with the private key set by derivation path
-   * 
+   *
    * @param {string}  msg - bytestring to be signed
    * @param {boolean} show - if true, display the msg to be signed
    * @returns {signature} the msg signature

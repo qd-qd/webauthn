@@ -1,5 +1,3 @@
-import { parseRequestOptionsFromJSON } from "@github/webauthn-json/browser-ponyfill";
-
 export const getKeyCredentialCreationOptions = (
     challenge: ArrayBuffer,
     displayName: string,
@@ -23,7 +21,7 @@ export const getKeyCredentialCreationOptions = (
                 name: username,
                 displayName: displayName,
             },
-            // wanna use another algorithms? Here's the list 
+            // wanna use another algorithms? Here's the list
             // https://www.iana.org/assignments/cose/cose.xhtml#algorithms
             pubKeyCredParams: [{ alg: -7, type: "public-key" }, { alg: -257, type: "public-key" }],
             timeout: 60000,
@@ -45,7 +43,7 @@ export const getRequestOptions = (challenge: ArrayBuffer): CredentialRequestOpti
     return ({
         publicKey: {
             timeout: 60000,
-            userVerification: "required",
+            userVerification: "preferred",
             challenge,
         }
     });

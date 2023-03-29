@@ -1,10 +1,7 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import {
-  getKeyCredentialCreationOptions,
-  getRequestOptions,
-} from "../utils/webauthn";
-import { get, create } from "@github/webauthn-json/browser-ponyfill";
+import { getKeyCredentialCreationOptions } from "../utils/webauthn";
+import { create } from "@github/webauthn-json/browser-ponyfill";
 import ab2str from "arraybuffer-to-string";
 
 // import the component client-side only
