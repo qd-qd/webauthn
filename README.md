@@ -1,5 +1,7 @@
 # WebAuthn experimentation
 
+[![Twitter Follow](https://img.shields.io/twitter/follow/qdqd___?style=social)](https://twitter.com/qdqd___)
+
 ## Introduction
 
 This repository is an experimentation that shows how the Web Authentication API works (called WebAuthn), and how this specification can be used to create a passwordless **and usernameless** authentification experiences (thanks to the resident keys). The code in this repository is not production-ready. Please, take into consideration concerns and comments in the [note](#notes) section before using it in production.
